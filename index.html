@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CDR Map - CSV Azimuth Visualizer</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <section id="landingPage" class="app-page landing-page active">
+      <div class="landing-overlay"></div>
+      <div class="landing-content">
+        <div class="landing-actions">
+          <label id="dropZone" for="csvFile" class="drop-zone">
+            <span class="drop-zone-title">Upload document(s)</span>
+            <span class="drop-zone-subtitle">Drag &amp; drop files here or click to browse</span>
+          </label>
+          <input id="csvFile" type="file" accept=".csv,text/csv" multiple />
+          <div class="landing-nav-buttons">
+            <button id="landingToMapBtn" type="button">Map</button>
+            <button id="landingToLogBtn" type="button">Full Note Log</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="mapPage" class="app-page map-page">
+      <header class="top-nav">
+        <div>
+          <p class="eyebrow">Workspace</p>
+          <h2>Map Analysis</h2>
+        </div>
+      </header>
+
+      <div class="container">
+        <aside id="sidebar" class="sidebar">
+          <button id="toggleSidebarBtn" class="panel-toggle" type="button" aria-label="Toggle side panel">◀</button>
+
+          <section class="panel nav-panel">
+            <h2>Navigation</h2>
+            <div class="sidebar-nav-buttons">
+              <button id="toLandingBtn" type="button">Reset</button>
+              <button id="toMapBtn" type="button">Map</button>
+              <button id="toLogBtn" type="button">Full Note Log</button>
+            </div>
+          </section>
+
+          <section class="panel">
+            <h2>Visualization</h2>
+            <div class="controls">
+              <label for="vizMode">Mode</label>
+              <select id="vizMode">
+                <option value="line" selected>Azimuth Line</option>
+                <option value="circle">Radius Circle</option>
+              </select>
+            </div>
+
+            <div class="controls" id="rayLengthControl">
+              <label for="rayLength">Distance (meters, line mode)</label>
+              <input id="rayLength" type="number" value="800" min="1" step="1" />
+            </div>
+
+            <div class="controls" id="circleRadiusControl">
+              <label for="circleRadius">Circle radius (meters, circle mode)</label>
+              <input id="circleRadius" type="number" value="100" min="1" step="1" />
+            </div>
+          </section>
+
+          <section class="panel">
+            <h2>Timeline</h2>
+            <input id="timeSlider" type="range" min="0" max="0" value="0" disabled />
+            <div class="timeline-row">
+              <span id="timeLabel">No data loaded</span>
+            </div>
+          </section>
+
+          <section class="panel">
+            <h2>Notes on movement</h2>
+            <div id="selectedPointMeta" class="hint">No point selected</div>
+            <input id="pointNote" type="text" placeholder="Note" />
+            <div class="timeline-row">
+              <button id="saveNoteBtn" disabled>Save Note</button>
+            </div>
+          </section>
+
+          <section class="panel report-panel">
+            <h2>Last Saved Note</h2>
+            <p id="lastNoteTime" class="hint">No note saved yet</p>
+          </section>
+        </aside>
+
+        <section class="panel map-panel">
+          <h2>Map</h2>
+          <div id="map"></div>
+
+          <div id="collapsedHud" class="collapsed-hud" aria-hidden="true">
+            <input id="hudTimeSlider" type="range" min="0" max="0" value="0" />
+            <div class="hud-note-row">
+              <input id="hudPointNote" type="text" placeholder="Note" />
+              <button id="hudSaveNoteBtn" type="button">Save</button>
+            </div>
+          </div>
+
+          <div id="datasetLegend" class="dataset-legend">
+            <div class="legend-header">
+              <h3>Datasets</h3>
+              <button id="toggleLegendBtn" class="legend-toggle" type="button" aria-label="Toggle dataset legend">▸</button>
+            </div>
+            <div id="legendItems" class="legend-items"></div>
+          </div>
+        </section>
+      </div>
+
+    </section>
+
+    <section id="logPage" class="app-page log-page">
+      <header class="top-nav">
+        <div>
+          <p class="eyebrow">Reporting</p>
+          <h2>Full Note Log</h2>
+        </div>
+      </header>
+
+      <section class="log-card">
+        <div class="log-nav-buttons">
+          <button id="logToMapBtn" type="button">Map</button>
+          <button id="logToLandingBtn" type="button">Reset</button>
+          <button id="clearAllNotesBtn" type="button">Delete All Notes</button>
+        </div>
+        <h3>Notes</h3>
+        <p class="hint">Saved notes in full, across all uploaded datasets</p>
+        <div id="fullLogContainer" class="full-log-container"></div>
+      </section>
+
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/proj4@2.9.0/dist/proj4.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
